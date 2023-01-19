@@ -2,7 +2,7 @@ const User = require("../model/user")
 const {StatusCodes} = require("http-status-codes")
 
 
-const signUp = async (req, res)=>{
+const signUp = async (req, res) => {
     const {username, email, password} = req.body
    
     if(!username || !email || !password){
@@ -24,24 +24,25 @@ const signUp = async (req, res)=>{
  
 }
 
-const signIn = async (req, res) =>{
-    const {username, password} = req.body
+const signIn = async (req, res) => {
+    const { username, password } = req.body
 
     if(!username || !password){
         res.status(StatusCodes.BAD_REQUEST).json({msg: "please provide user details"})
     }
 
-    const user = User.findOne({username}).select("+password")
+    const user = await User.findOne({username}).select("+password")
 
     if(!user){
-        res.status(StatusCodes.BAD_REQUEST).json({msg: "invalid user credentails"})
+        res.status(StatusCodes.BAD_REQUEST).json({msg: "invalid user credentials"})
     }
 
-    const isMatchPassword = user.comparePassword(password)
+    const isMatchPassword = await user.comparePassword(password)
+
     if(!isMatchPassword){
-        res.status(StatusCodes.BAD_REQUEST).json({msg: "inavalid user credentails"})
+        res.status(StatusCodes.BAD_REQUEST).json({msg: "inavalid user credentials"})
     }
-
+    user.password = undefined
     res.status(StatusCodes.OK).json({user})
 }
 
