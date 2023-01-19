@@ -21,7 +21,7 @@ const port = process.env.PORT || 5000
 const start = async ()=>{
 
    try {
-    await connectDb("mongodb+srv://eimaam:eimaam@cluster0.8xmtwqu.mongodb.net/Nasa-daily?retryWrites=true&w=majority")
+    await connectDb(process.env.MONGO_URI)
     app.listen(port, ()=>{
         console.log(`server is running at port ${port}`)
     })
