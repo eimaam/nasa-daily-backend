@@ -27,8 +27,10 @@ const signUp = async (req, res) => {
 const signIn = async (req, res) => {
     const { username, password } = req.body
 
+    // check that user enters username and password
     if(!username || !password){
         res.status(StatusCodes.BAD_REQUEST).json({msg: "please provide user details"})
+        return;
     }
 
     const user = await User.findOne({username}).select("+password")
@@ -37,11 +39,14 @@ const signIn = async (req, res) => {
         res.status(StatusCodes.BAD_REQUEST).json({msg: "invalid user credentials"})
     }
 
+    // check for matching password
     const isMatchPassword = await user.comparePassword(password)
 
     if(!isMatchPassword){
         res.status(StatusCodes.BAD_REQUEST).json({msg: "inavalid user credentials"})
+        return;
     }
+
     user.password = undefined
     res.status(StatusCodes.OK).json({user})
 }
